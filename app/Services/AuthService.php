@@ -29,17 +29,17 @@ class AuthService
         ];
     }
 
-    public function register($data): User
+    public function register(array $data): User
     {
         return $this->authRepository->register($data);
     }
 
-    public function logout($user): void
+    public function logout(User $user): void
     {
         $this->authRepository->logout($user);
     }
 
-    public function refreshToken($user): array
+    public function refreshToken(User $user): array
     {
         $token = $this->authRepository->refreshToken($user);
 
@@ -48,9 +48,16 @@ class AuthService
         ];
     }
 
-    public function changePassword($data): void
+    public function changePassword(array $data): void
     {
         $this->authRepository->changePassword($data);
+    }
+
+    public function sendOtp(array $data): bool
+    {
+        $email = $data['email'];
+
+        return $this->authRepository->sendOtp($email);
     }
 
     public function getTokenExpirationTime(): ?Carbon
@@ -59,5 +66,13 @@ class AuthService
             config('sanctum.expiration'),
             static fn ($minutes) => $minutes ? now()->addMinutes((int) $minutes) : null
         );
+    }
+
+    public function validateOtp(array $data): bool
+    {
+        $email = $data['email'];
+        $otpCode = $data['otp'];
+
+        return $this->authRepository->validateOtp($email, $otpCode);
     }
 }

@@ -4,11 +4,19 @@ namespace App\Repositories;
 
 use App\Interfaces\AuthRepositoryInterface;
 use App\Models\User;
+use App\Services\OtpService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
+use Random\RandomException;
+use RuntimeException;
 
 class AuthRepository implements AuthRepositoryInterface
 {
+    public function __construct(
+        protected OtpService $otpService
+    ) {}
+
     public function login(array $credentials): User
     {
         $user = User::where('email', $credentials['email'])->first();
@@ -33,12 +41,18 @@ class AuthRepository implements AuthRepositoryInterface
         return User::create($data);
     }
 
-    public function logout($user): void
+    public function logout(User $user): void
     {
-        $user->currentAccessToken()->delete();
+        $token = $user->currentAccessToken();
+
+        if (! $token instanceof PersonalAccessToken) {
+            throw new RuntimeException('Invalid token type');
+        }
+
+        $token->delete();
     }
 
-    public function refreshToken($user): string
+    public function refreshToken(User $user): string
     {
         $user->tokens()->delete();
 
@@ -51,5 +65,21 @@ class AuthRepository implements AuthRepositoryInterface
         $user->password = Hash::make($data['new_password']);
         $user->save();
         $user->tokens()->delete();
+    }
+
+    /**
+     * @throws RandomException
+     */
+    public function sendOtp(string $email): bool
+    {
+        $this->otpService->generateOtp($email)
+            ->sendOtpEmail($email);
+
+        return true;
+    }
+
+    public function validateOtp(string $email, string $otpCode): bool
+    {
+        return $this->otpService->validateOtp($email, $otpCode);
     }
 }

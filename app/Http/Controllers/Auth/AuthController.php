@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\SendOtpRequest;
+use App\Http\Requests\ValidateOtpRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use App\Traits\ApiResponseTrait;
@@ -58,5 +60,19 @@ class AuthController extends Controller
         $this->authService->changePassword($request->validated());
 
         return $this->successResponse(message: 'Password successfully changed. Please re-login again');
+    }
+
+    public function sendOtp(SendOtpRequest $request): ?JsonResponse
+    {
+        $this->authService->sendOtp($request->validated());
+
+        return $this->successResponse(message: 'OTP sent to your email. Check your spam folder if you don’t see it.');
+    }
+
+    public function validateOtp(ValidateOtpRequest $request): ?JsonResponse
+    {
+        $this->authService->validateOtp($request->validated());
+
+        return $this->successResponse(message: 'OTP validated successfully');
     }
 }

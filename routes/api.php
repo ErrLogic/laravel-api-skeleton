@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/generate-otp', [AuthController::class, 'sendOtp']);
+    Route::post('/validate-otp', [AuthController::class, 'validateOtp']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {

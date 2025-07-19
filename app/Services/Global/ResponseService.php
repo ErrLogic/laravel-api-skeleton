@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services\Global;
 
 use App\Traits\ApiResponseTrait;
 
-class ApiController extends Controller
+class ResponseService
 {
     use ApiResponseTrait;
 }

@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\ThrottleRequests;
+use App\Services\Global\ResponseService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->is('api/*')) {
-                $response = new ApiController;
+                $response = new ResponseService;
 
                 switch (true) {
                     case $e instanceof MethodNotAllowedHttpException:

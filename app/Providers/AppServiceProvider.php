@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Interfaces\AuthRepositoryInterface;
 use App\Models\PersonalAccessToken;
 use App\Repositories\AuthRepository;
-use App\Services\RateLimiterService;
+use App\Services\Global\RateLimiterService;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;

@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
-class ChangePasswordRequest extends FormRequest
+class PrivateMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +23,8 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'old_password' => ['required'],
-            'new_password' => [
-                'required',
-                'confirmed',
-                Password::min(6)
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols(),
-            ],
-            'otp_code' => 'required|numeric|digits:6',
+            'user_id' => 'required|string|exists:users,id',
+            'message' => 'required|string',
         ];
     }
 }
